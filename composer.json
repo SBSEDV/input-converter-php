@@ -10,12 +10,10 @@
         }
     ],
     "keywords": [
-        "application/json",
         "json",
-        "multipart/form-data",
         "formdata",
-        "application/x-www-urlencoded",
         "urlencoded",
+        "x-www-urlencoded"
         "input transformer",
         "input",
         "parser",
