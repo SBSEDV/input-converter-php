@@ -1,0 +1,38 @@
+{
+    "name": "sbsedv/input-library",
+    "description": "A minimal PHP library to nativly support PUT, PATCH and DELETE user input in form of mutlipart/form-data, application/x-www-urlencoded and various JSON types like application/json with complex data structures.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniel Burger",
+            "homepage": "https://github.com/danielburger1337"
+        }
+    ],
+    "keywords": [
+        "application/json",
+        "json",
+        "multipart/form-data",
+        "formdata",
+        "application/x-www-urlencoded",
+        "urlencoded",
+        "input transformer",
+        "input",
+        "parser",
+        "parse formdata",
+        "file upload"
+    ],
+    "autoload": {
+        "psr-4": {
+            "SBSEDV\\InputLibrary\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.2",
+        "riverline/multipart-parser": "^2.0"
+    },
+    "suggest": {
+        "symfony/http-foundation": "The Symfony HttpFoundation component replaces these default PHP global variables and functions by an object-oriented layer.",
+        "nyholm/psr7": "A super lightweight PSR-7 implementation. Very strict and very fast."
+    }
+}
