@@ -13,7 +13,7 @@
         "json",
         "formdata",
         "urlencoded",
-        "x-www-urlencoded"
+        "x-www-urlencoded",
         "input transformer",
         "input",
         "parser",
