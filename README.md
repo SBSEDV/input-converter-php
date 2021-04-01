@@ -76,7 +76,7 @@ $parseInput = (new InputLibrary())
 
 // update $_POST and $_FILES with parsed values
 $parseInput->toGlobals(): void;
-// populate $request->reqst and $request->files
+// populate $request->request and $request->files
 $parseInput->toHttpFoundation(
     Symfony\Component\HttpFoundation\Request $request
 ): void;
