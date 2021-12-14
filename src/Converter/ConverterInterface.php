@@ -3,6 +3,8 @@
 namespace SBSEDV\Component\InputConverter\Converter;
 
 use Psr\Http\Message\ServerRequestInterface;
+use SBSEDV\Component\InputConverter\Exception\MalformedContentException;
+use SBSEDV\Component\InputConverter\ParsedInput;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -18,9 +20,11 @@ interface ConverterInterface
     public function supports(Request | ServerRequestInterface $request): bool;
 
     /**
-     * the request body and returns the found user input.
+     * Convert a request body to a parsed input object.
      *
      * @param Request|ServerRequestInterface $request The http request.
+     *
+     * @throws MalformedContentException If the request body is malformed.
      */
     public function convert(Request | ServerRequestInterface $request): ParsedInput;
 }
