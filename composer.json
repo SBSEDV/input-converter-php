@@ -1,6 +1,6 @@
 {
-    "name": "sbsedv/input-library",
-    "description": "A minimal PHP library to nativly support PUT, PATCH and DELETE user input in form of mutlipart/form-data, application/x-www-urlencoded and various JSON types like application/json with complex data structures.",
+    "name": "sbsedv/input-converter",
+    "description": "A minimal PHP library to nativly support PUT, PATCH and DELETE user input in form of mutlipart/form-data, application/x-www-urlencoded and various JSON types like application/json with complex data structures (nested html forms).",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -14,7 +14,7 @@
         "formdata",
         "urlencoded",
         "x-www-urlencoded",
-        "input transformer",
+        "input converter",
         "input",
         "parser",
         "parse formdata",
@@ -22,12 +22,16 @@
     ],
     "autoload": {
         "psr-4": {
-            "SBSEDV\\InputLibrary\\": "src/"
+            "SBSEDV\\Component\\InputConverter\\": "src/"
         }
     },
     "require": {
-        "php": ">=7.2",
+        "php": ">=8.0",
         "riverline/multipart-parser": "^2.0"
+    },
+    "require-dev": {
+        "symfony/http-foundation": "^5.0 || ^6.0",
+        "nyholm/psr7": "^1.4"
     },
     "suggest": {
         "symfony/http-foundation": "The Symfony HttpFoundation component replaces these default PHP global variables and functions by an object-oriented layer.",
