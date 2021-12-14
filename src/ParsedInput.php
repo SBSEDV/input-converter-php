@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace SBSEDV\InputLibrary;
+namespace SBSEDV\Component\InputConverter;
 
 use Symfony\Component\HttpFoundation\Request;
 
 class ParsedInput
 {
-    /** @var array */
-    private $files = [];
-
-    /** @var array */
-    private $values = [];
+    public function __construct(
+        private array $values = [],
+        private array $files = []
+    ) {
+    }
 
     /**
      * Add parsed input values.
@@ -57,22 +57,22 @@ class ParsedInput
     }
 
     /**
-     * Add the parsed input the an Http-Foundation Request object.
+     * Add the parsed input to an Http-Foundation request object.
      *
      * @param Request $request The http-foundation request object.
      */
-    public function toHttpFoundation(Request &$request): void
+    public function applyOnHttpFoundationRequest(Request &$request): void
     {
-        $request->request->add($this->getValues());
-        $request->files->add($this->getFiles());
+        $request->request->add($this->values);
+        $request->files->add($this->files);
     }
 
     /**
-     * Add the parsed input to the PHP super globals $_POST and $_FILES.
+     * Apply the parsed input to the PHP super globals $_POST and $_FILES.
      */
-    public function toGlobals(): void
+    public function applyOnGlobals(): void
     {
-        $_POST = $this->getValues();
-        $_FILES = $this->getFiles();
+        $_POST = $this->values;
+        $_FILES = $this->files;
     }
 }
