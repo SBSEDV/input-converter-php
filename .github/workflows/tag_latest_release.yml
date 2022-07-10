@@ -1,0 +1,18 @@
+name: Tag latest release
+
+on:
+    release:
+        types: [created]
+
+    workflow_dispatch:
+
+jobs:
+    tag_release:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Git Checkout
+              uses: actions/checkout@v3
+
+            - name: Latest tag
+              uses: EndBug/latest-tag@v1.5.0
