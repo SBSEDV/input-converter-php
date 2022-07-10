@@ -79,7 +79,7 @@ You can always implement your own converter.
 
 By default we support three customisable converters:
 
-### `SBSEDV\InputConverter\Converter\UrlEncoded`
+### `SBSEDV\InputConverter\Converter\UrlEncodedConverter`
 
 Via its constructor you can influence which http methods it supports.
 
@@ -91,7 +91,7 @@ public function __construct(
 
 ---
 
-### `SBSEDV\InputConverter\Converter\JSON`
+### `SBSEDV\InputConverter\Converter\JsonConverter`
 
 Via its constructor you can influence which content types and http methods it supports.
 
@@ -104,7 +104,7 @@ public function __construct(
 
 ---
 
-### `SBSEDV\InputConverter\Converter\FormData`
+### `SBSEDV\InputConverter\Converter\FormDataConverter`
 
 Via its constructor you can influence which content types and http methods it supports.
 
