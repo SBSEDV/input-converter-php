@@ -8,12 +8,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UrlEncodedConverter extends AbstractConverter
 {
+    protected const ALLOWED_CONTENT_TYPE = 'application/x-www-urlencoded';
+
     /**
-     * @param string[] $contentTypes [optional] The supported http content types.
-     * @param string[] $methods      [optional] The supported http methods.
+     * @param string[] $methods [optional] The supported http methods.
      */
     public function __construct(
-        protected array $contentTypes = ['application/x-www-urlencoded'],
         protected array $methods = ['PUT', 'PATCH', 'DELETE']
     ) {
         // prevent user from overwriting PHPs native parsing
@@ -27,7 +27,17 @@ class UrlEncodedConverter extends AbstractConverter
      */
     public function supports(Request|ServerRequestInterface $request): bool
     {
-        return \in_array($request->getMethod(), $this->methods) && \in_array($this->getContentType($request), $this->contentTypes);
+        if (!\in_array($request->getMethod(), $this->methods, true)) {
+            return false;
+        }
+
+        foreach ($this->getContentTypes($request) as $contentType) {
+            if (\str_starts_with($contentType, self::ALLOWED_CONTENT_TYPE)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
