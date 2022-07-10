@@ -90,8 +90,6 @@ class FormData extends AbstractConverter
         // are marked via "[]" on the part name.
         parse_str(implode('&', $strings), $valueArray);
 
-        $parsedInput = new ParsedInput(static::class, $valueArray);
-
         // json_decode the $_FILES representation
         if ($this->fileSupport) {
             parse_str(implode('&', $files), $fileArray);
@@ -99,10 +97,8 @@ class FormData extends AbstractConverter
             array_walk_recursive($fileArray, function (&$item) {
                 $item = json_decode($item, true);
             });
-
-            $parsedInput->addFiles($fileArray);
         }
 
-        return $parsedInput;
+        return new ParsedInput(static::class, $valueArray, $fileArray ?? []);
     }
 }
