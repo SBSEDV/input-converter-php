@@ -57,16 +57,15 @@ try {
     // no converter supported the request
 }
 
-
-// update $_POST and $_FILES with parsed values
-$parseInput->toGlobals();
-
-// OR populate $request->request and $request->files
-$parseInput->applyOnHttpFoundationRequest($request);
-
-// OR access the data directly
+// access the data directly
 $values = $parseInput->getValues(): array; // like $_POST
 $files = $fileInput->getFiles(): array // like $_FILES
+
+// and add them to your http-foundation / psr7 implementation
+foreach ($parsedInput->getValues() as $key => $value) {
+    // http-foundation
+    $request = $request->request->set($key, $value);
+}
 ```
 
 ---
@@ -82,11 +81,10 @@ By default we support three customisable converters:
 
 ### `SBSEDV\InputConverter\Converter\UrlEncoded`
 
-Via its constructor you can influence which content types and http methods it supports.
+Via its constructor you can influence which http methods it supports.
 
 ```php
 public function __construct(
-    array $contentTypes = ['application/x-www-urlencoded'],
     array $methods = ['PUT', 'PATCH', 'DELETE']
 );
 ```
@@ -125,7 +123,7 @@ Even though file uploads via mulitpart/form-data are fully supported, they are *
 
 #### **_COMPATIBILITY_**:
 
-Also, the returned file format is not 100 percent compatibile with the native [$\_FILES](https://www.php.net/manual/en/features.file-upload.post-method.php#example-420) global.
+Also, the returned file format is not compatibile with the native [$\_FILES](https://www.php.net/manual/en/features.file-upload.post-method.php#example-420) global.
 
 If you upload an array / of images like:
 
@@ -134,7 +132,7 @@ If you upload an array / of images like:
 <input type="file" name="pictures[test2]" />
 ```
 
-PHP has a very, lets say not friendly way of arranging the array:
+PHP has a very, lets say not friendly way of sorting the array:
 
 ```php
 // Expected behaviour
@@ -167,4 +165,4 @@ $_FILES_ = [
 ];
 ```
 
-For sanity reasons we return the **expected** behaviour.
+We return the much more friendly **expected** behaviour.
