@@ -8,7 +8,7 @@ use SBSEDV\InputConverter\Exception\MalformedContentException;
 use SBSEDV\InputConverter\ParsedInput;
 use Symfony\Component\HttpFoundation\Request;
 
-class FormData extends AbstractConverter
+class FormDataConverter extends AbstractConverter
 {
     /**
      * @param string[] $methods     [optional] The supported http methods.
@@ -22,7 +22,7 @@ class FormData extends AbstractConverter
         protected bool $fileSupport = false
     ) {
         // prevent user from overwriting PHPs native parsing
-        if (false !== ($key = array_search('POST', $this->methods, false))) {
+        if (false !== ($key = \array_search('POST', $this->methods, false))) {
             unset($this->methods[$key]);
         }
     }
