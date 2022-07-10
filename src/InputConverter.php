@@ -23,7 +23,7 @@ class InputConverter
      *
      * @return ConverterInterface[]
      */
-    public function getConverts(): array
+    public function getConverters(): array
     {
         return $this->converters;
     }
