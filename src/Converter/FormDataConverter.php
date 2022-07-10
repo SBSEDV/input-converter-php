@@ -35,8 +35,17 @@ class FormDataConverter extends AbstractConverter
         // The content type will always have a random suffix
         // "multipart/form-data; boundary=----WebKitFormBoundary4783NIJFN"
 
-        return \in_array($request->getMethod(), $this->methods)
-            && \str_starts_with($this->getContentType($request), 'multipart/form-data; boundary=');
+        if (!\in_array($request->getMethod(), $this->methods, true)) {
+            return false;
+        }
+
+        foreach ($this->getContentTypes($request) as $contentType) {
+            if (\str_starts_with($contentType, 'multipart/form-data; boundary=')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

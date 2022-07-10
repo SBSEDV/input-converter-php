@@ -23,7 +23,20 @@ class JsonConverter extends AbstractConverter
      */
     public function supports(Request|ServerRequestInterface $request): bool
     {
-        return \in_array($request->getMethod(), $this->methods) && \in_array($this->getContentType($request), $this->contentTypes);
+        if (!\in_array($request->getMethod(), $this->methods, true)) {
+            return false;
+        }
+
+        foreach ($this->getContentTypes($request) as $contentType) {
+            foreach ($this->contentTypes as $allowedContentType) {
+                // use str_starts_with because CT is often send as "application/json; charset=utf8"
+                if (\str_starts_with($contentType, $allowedContentType)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
