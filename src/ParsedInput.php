@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SBSEDV\Component\InputConverter;
+namespace SBSEDV\InputConverter;
 
 use Symfony\Component\HttpFoundation\Request;
 

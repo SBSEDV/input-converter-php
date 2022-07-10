@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SBSEDV\Component\InputConverter\Converter;
+namespace SBSEDV\InputConverter\Converter;
 
 use Psr\Http\Message\ServerRequestInterface;
-use SBSEDV\Component\InputConverter\ParsedInput;
+use SBSEDV\InputConverter\ParsedInput;
 use Symfony\Component\HttpFoundation\Request;
 
 class JSON extends AbstractConverter
@@ -21,7 +21,7 @@ class JSON extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function supports(Request | ServerRequestInterface $request): bool
+    public function supports(Request|ServerRequestInterface $request): bool
     {
         return \in_array($request->getMethod(), $this->methods) && \in_array($this->getContentType($request), $this->contentTypes);
     }
@@ -29,7 +29,7 @@ class JSON extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function convert(Request | ServerRequestInterface $request): ParsedInput
+    public function convert(Request|ServerRequestInterface $request): ParsedInput
     {
         $array = \json_decode($this->getContent($request), true, flags: \JSON_THROW_ON_ERROR) ?? [];
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SBSEDV\Component\InputConverter\Exception;
+namespace SBSEDV\InputConverter\Exception;
 
 /**
  * Base exception interface for all input converter thrown exceptions.

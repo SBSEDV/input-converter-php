@@ -22,7 +22,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "SBSEDV\\Component\\InputConverter\\": "src/"
+            "SBSEDV\\InputConverter\\": "src/"
         }
     },
     "require": {

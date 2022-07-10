@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SBSEDV\Component\InputConverter;
+namespace SBSEDV\InputConverter;
 
 use Psr\Http\Message\ServerRequestInterface;
-use SBSEDV\Component\InputConverter\Converter\ConverterInterface;
-use SBSEDV\Component\InputConverter\Exception\MalformedContentException;
-use SBSEDV\Component\InputConverter\Exception\UnsupportedRequestException;
+use SBSEDV\InputConverter\Converter\ConverterInterface;
+use SBSEDV\InputConverter\Exception\MalformedContentException;
+use SBSEDV\InputConverter\Exception\UnsupportedRequestException;
 use Symfony\Component\HttpFoundation\Request;
 
 class InputConverter
@@ -50,7 +50,7 @@ class InputConverter
      * @throws MalformedContentException   If the request body is malformed.
      * @throws UnsupportedRequestException If no supporting converter was found.
      */
-    public function convert(Request | ServerRequestInterface $request = null): ParsedInput
+    public function convert(Request|ServerRequestInterface $request = null): ParsedInput
     {
         foreach ($this->converters as $converter) {
             if ($converter->supports($request)) {

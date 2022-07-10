@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SBSEDV\Component\InputConverter\Converter;
+namespace SBSEDV\InputConverter\Converter;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Riverline\MultiPartParser\Converters;
-use SBSEDV\Component\InputConverter\Exception\MalformedContentException;
-use SBSEDV\Component\InputConverter\ParsedInput;
+use SBSEDV\InputConverter\Exception\MalformedContentException;
+use SBSEDV\InputConverter\ParsedInput;
 use Symfony\Component\HttpFoundation\Request;
 
 class FormData extends AbstractConverter
@@ -30,7 +30,7 @@ class FormData extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function supports(Request | ServerRequestInterface $request): bool
+    public function supports(Request|ServerRequestInterface $request): bool
     {
         // The content type will always have a random suffix
         // "multipart/form-data; boundary=----WebKitFormBoundary4783NIJFN"
@@ -42,7 +42,7 @@ class FormData extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function convert(Request | ServerRequestInterface $request): ParsedInput
+    public function convert(Request|ServerRequestInterface $request): ParsedInput
     {
         if ($request instanceof Request) {
             $document = Converters\HttpFoundation::convert($request);

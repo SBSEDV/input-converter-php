@@ -39,8 +39,8 @@ You **MUST** pass either a [PSR-7](https://www.php-fig.org/psr/psr-7/) or [HTTP-
 ```php
 <?php declare(strict_types=1);
 
-use SBSEDV\Component\InputConverter\InputConverter;
-use SBSEDV\Component\InputConverter\ParsedInput;
+use SBSEDV\InputConverter\InputConverter;
+use SBSEDV\InputConverter\ParsedInput;
 
 try {
     /** @var ParsedInput $parsedInput */
@@ -74,13 +74,13 @@ $files = $fileInput->getFiles(): array // like $_FILES
 ## **Converters**
 
 The actual parsing is handled by converter classes that implement
-[SBSEDV\Component\InputConverter\Converter\ConverterInterface](src/Converter/ConverterInterface.php).
+[SBSEDV\InputConverter\Converter\ConverterInterface](src/Converter/ConverterInterface.php).
 
 You can always implement your own converter.
 
 By default we support three customisable converters:
 
-### `SBSEDV\Component\InputConverter\Converter\UrlEncoded`
+### `SBSEDV\InputConverter\Converter\UrlEncoded`
 
 Via its constructor you can influence which content types and http methods it supports.
 
@@ -93,7 +93,7 @@ public function __construct(
 
 ---
 
-### `SBSEDV\Component\InputConverter\Converter\JSON`
+### `SBSEDV\InputConverter\Converter\JSON`
 
 Via its constructor you can influence which content types and http methods it supports.
 
@@ -106,7 +106,7 @@ public function __construct(
 
 ---
 
-### `SBSEDV\Component\InputConverter\Converter\FormData`
+### `SBSEDV\InputConverter\Converter\FormData`
 
 Via its constructor you can influence which content types and http methods it supports.
 

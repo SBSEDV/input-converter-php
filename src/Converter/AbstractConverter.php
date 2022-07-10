@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SBSEDV\Component\InputConverter\Converter;
+namespace SBSEDV\InputConverter\Converter;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +12,7 @@ abstract class AbstractConverter implements ConverterInterface
      *
      * @param Request|ServerRequestInterface $request The request to get the header from.
      */
-    protected function getContentType(Request | ServerRequestInterface $request): string
+    protected function getContentType(Request|ServerRequestInterface $request): string
     {
         $headers = [];
 
@@ -32,7 +32,7 @@ abstract class AbstractConverter implements ConverterInterface
      *
      * @param Request|ServerRequestInterface $request The request to get the content from.
      */
-    protected function getContent(Request | ServerRequestInterface $request): string
+    protected function getContent(Request|ServerRequestInterface $request): string
     {
         if ($request instanceof Request) {
             return $request->getContent();
