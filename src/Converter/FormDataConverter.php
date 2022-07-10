@@ -72,39 +72,52 @@ class FormDataConverter extends AbstractConverter
                 }
 
                 // write the body to a temporary file
-                $tmpFile = tempnam(sys_get_temp_dir(), '');
-                $tmp = fopen($tmpFile, 'w');
-                fwrite($tmp, $part->getBody());
-                fclose($tmp);
+                $tmpFile = \tempnam(\sys_get_temp_dir(), '');
+                if (false === $tmpFile) {
+                    throw new \RuntimeException('Could not create temporary file.');
+                }
+
+                $tmp = \fopen($tmpFile, 'w');
+                if (false === $tmp) {
+                    throw new \RuntimeException('Could not read temporary file.');
+                }
+
+                \fwrite($tmp, $part->getBody());
+                \fclose($tmp);
 
                 // Create an array that represents $_FILES.
                 // Then json_encode it so that we can urlencode it.
-                $body = json_encode([
+                $body = \json_encode([
                     'error' => \UPLOAD_ERR_OK,
                     'name' => $part->getFileName(),
                     'type' => $part->getMimeType(),
                     'tmp_name' => $tmpFile,
-                    'size' => filesize($tmpFile),
-                ]);
+                    'size' => \filesize($tmpFile),
+                ], \JSON_THROW_ON_ERROR);
 
-                $files[] = urlencode($part->getName()).'='.urlencode($body);
+                if (null !== $part->getName()) {
+                    $files[] = \urlencode($part->getName()).'='.\urlencode($body);
+                }
+
                 continue;
             }
 
-            $strings[] = urlencode($part->getName()).'='.urlencode($part->getBody());
+            if (null !== $part->getName()) {
+                $strings[] = \urlencode($part->getName()).'='.\urlencode($part->getBody());
+            }
         }
 
         // we have urlencoded the multipart data so that we can easily
         // keep complex data structures like arrays and objects that
         // are marked via "[]" on the part name.
-        parse_str(implode('&', $strings), $valueArray);
+        \parse_str(\implode('&', $strings), $valueArray);
 
         // json_decode the $_FILES representation
         if ($this->fileSupport) {
-            parse_str(implode('&', $files), $fileArray);
+            \parse_str(\implode('&', $files), $fileArray);
 
-            array_walk_recursive($fileArray, function (&$item) {
-                $item = json_decode($item, true);
+            \array_walk_recursive($fileArray, function (&$item) {
+                $item = \json_decode($item, true);
             });
         }
 
