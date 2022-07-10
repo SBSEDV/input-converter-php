@@ -7,9 +7,18 @@ use Symfony\Component\HttpFoundation\Request;
 class ParsedInput
 {
     public function __construct(
+        private string $converterName,
         private array $values = [],
         private array $files = []
     ) {
+    }
+
+    /**
+     * The converter that parsed the request.
+     */
+    public function getConverterName(): string
+    {
+        return $this->converterName;
     }
 
     /**

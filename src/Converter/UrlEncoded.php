@@ -37,6 +37,6 @@ class UrlEncoded extends AbstractConverter
     {
         \parse_str($this->getContent($request), $array);
 
-        return new ParsedInput($array);
+        return new ParsedInput(static::class, $array);
     }
 }

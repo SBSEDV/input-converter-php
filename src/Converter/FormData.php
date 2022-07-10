@@ -90,7 +90,7 @@ class FormData extends AbstractConverter
         // are marked via "[]" on the part name.
         parse_str(implode('&', $strings), $valueArray);
 
-        $parsedInput = new ParsedInput($valueArray);
+        $parsedInput = new ParsedInput(static::class, $valueArray);
 
         // json_decode the $_FILES representation
         if ($this->fileSupport) {

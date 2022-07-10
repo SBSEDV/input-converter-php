@@ -33,6 +33,6 @@ class JSON extends AbstractConverter
     {
         $array = \json_decode($this->getContent($request), true, flags: \JSON_THROW_ON_ERROR) ?? [];
 
-        return new ParsedInput($array);
+        return new ParsedInput(static::class, $array);
     }
 }
