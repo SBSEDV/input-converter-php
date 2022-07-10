@@ -17,10 +17,10 @@ abstract class AbstractConverter implements ConverterInterface
     protected function getContentTypes(Request|ServerRequestInterface $request): array
     {
         if ($request instanceof Request) {
-            return $request->headers->all('Content-Type');
+            return $request->headers->all('content-type'); // @phpstan-ignore-line
         }
 
-        return $request->getHeader('Content-Type');
+        return $request->getHeader('content-type');
     }
 
     /**
