@@ -3,6 +3,7 @@
 namespace SBSEDV\InputConverter\Converter;
 
 use Psr\Http\Message\ServerRequestInterface;
+use SBSEDV\InputConverter\Exception\MalformedContentException;
 use SBSEDV\InputConverter\ParsedInput;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -44,8 +45,12 @@ class JsonConverter extends AbstractConverter
      */
     public function convert(Request|ServerRequestInterface $request): ParsedInput
     {
-        $array = \json_decode($this->getContent($request), true, flags: \JSON_THROW_ON_ERROR) ?? [];
+        try {
+            $array = \json_decode($this->getContent($request), true, flags: \JSON_THROW_ON_ERROR) ?? [];
+        } catch (\JsonException $e) {
+            throw new MalformedContentException($e);
+        }
 
-        return new ParsedInput(static::class, $array);
+        return new ParsedInput(static::class, $array); // @phpstan-ignore-line
     }
 }
