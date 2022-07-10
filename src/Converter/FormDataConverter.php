@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace SBSEDV\Component\InputConverter\Converter;
+namespace SBSEDV\InputConverter\Converter;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Riverline\MultiPartParser\Converters;
-use SBSEDV\Component\InputConverter\Exception\MalformedContentException;
-use SBSEDV\Component\InputConverter\ParsedInput;
+use SBSEDV\InputConverter\Exception\MalformedContentException;
+use SBSEDV\InputConverter\ParsedInput;
 use Symfony\Component\HttpFoundation\Request;
 
-class FormData extends AbstractConverter
+class FormDataConverter extends AbstractConverter
 {
     /**
      * @param string[] $methods     [optional] The supported http methods.
@@ -22,7 +22,7 @@ class FormData extends AbstractConverter
         protected bool $fileSupport = false
     ) {
         // prevent user from overwriting PHPs native parsing
-        if (false !== ($key = array_search('POST', $this->methods, false))) {
+        if (false !== ($key = \array_search('POST', $this->methods, false))) {
             unset($this->methods[$key]);
         }
     }
@@ -30,19 +30,28 @@ class FormData extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function supports(Request | ServerRequestInterface $request): bool
+    public function supports(Request|ServerRequestInterface $request): bool
     {
         // The content type will always have a random suffix
         // "multipart/form-data; boundary=----WebKitFormBoundary4783NIJFN"
 
-        return \in_array($request->getMethod(), $this->methods)
-            && \str_starts_with($this->getContentType($request), 'multipart/form-data; boundary=');
+        if (!\in_array($request->getMethod(), $this->methods, true)) {
+            return false;
+        }
+
+        foreach ($this->getContentTypes($request) as $contentType) {
+            if (\str_starts_with($contentType, 'multipart/form-data; boundary=')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function convert(Request | ServerRequestInterface $request): ParsedInput
+    public function convert(Request|ServerRequestInterface $request): ParsedInput
     {
         if ($request instanceof Request) {
             $document = Converters\HttpFoundation::convert($request);
@@ -63,46 +72,55 @@ class FormData extends AbstractConverter
                 }
 
                 // write the body to a temporary file
-                $tmpFile = tempnam(sys_get_temp_dir(), '');
-                $tmp = fopen($tmpFile, 'w');
-                fwrite($tmp, $part->getBody());
-                fclose($tmp);
+                $tmpFile = \tempnam(\sys_get_temp_dir(), '');
+                if (false === $tmpFile) {
+                    throw new \RuntimeException('Could not create temporary file.');
+                }
+
+                $tmp = \fopen($tmpFile, 'w');
+                if (false === $tmp) {
+                    throw new \RuntimeException('Could not read temporary file.');
+                }
+
+                \fwrite($tmp, $part->getBody());
+                \fclose($tmp);
 
                 // Create an array that represents $_FILES.
                 // Then json_encode it so that we can urlencode it.
-                $body = json_encode([
+                $body = \json_encode([
                     'error' => \UPLOAD_ERR_OK,
                     'name' => $part->getFileName(),
                     'type' => $part->getMimeType(),
                     'tmp_name' => $tmpFile,
-                    'size' => filesize($tmpFile),
-                ]);
+                    'size' => \filesize($tmpFile),
+                ], \JSON_THROW_ON_ERROR);
 
-                $files[] = urlencode($part->getName()).'='.urlencode($body);
+                if (null !== $part->getName()) {
+                    $files[] = \urlencode($part->getName()).'='.\urlencode($body);
+                }
+
                 continue;
             }
 
-            $strings[] = urlencode($part->getName()).'='.urlencode($part->getBody());
+            if (null !== $part->getName()) {
+                $strings[] = \urlencode($part->getName()).'='.\urlencode($part->getBody());
+            }
         }
 
         // we have urlencoded the multipart data so that we can easily
         // keep complex data structures like arrays and objects that
         // are marked via "[]" on the part name.
-        parse_str(implode('&', $strings), $valueArray);
-
-        $parsedInput = new ParsedInput($valueArray);
+        \parse_str(\implode('&', $strings), $valueArray);
 
         // json_decode the $_FILES representation
         if ($this->fileSupport) {
-            parse_str(implode('&', $files), $fileArray);
+            \parse_str(\implode('&', $files), $fileArray);
 
-            array_walk_recursive($fileArray, function (&$item) {
-                $item = json_decode($item, true);
+            \array_walk_recursive($fileArray, function (&$item) {
+                $item = \json_decode($item, true);
             });
-
-            $parsedInput->addFiles($fileArray);
         }
 
-        return $parsedInput;
+        return new ParsedInput(static::class, $valueArray, $fileArray ?? []);
     }
 }

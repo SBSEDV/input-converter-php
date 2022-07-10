@@ -39,8 +39,8 @@ You **MUST** pass either a [PSR-7](https://www.php-fig.org/psr/psr-7/) or [HTTP-
 ```php
 <?php declare(strict_types=1);
 
-use SBSEDV\Component\InputConverter\InputConverter;
-use SBSEDV\Component\InputConverter\ParsedInput;
+use SBSEDV\InputConverter\InputConverter;
+use SBSEDV\InputConverter\ParsedInput;
 
 try {
     /** @var ParsedInput $parsedInput */
@@ -57,16 +57,15 @@ try {
     // no converter supported the request
 }
 
-
-// update $_POST and $_FILES with parsed values
-$parseInput->toGlobals();
-
-// OR populate $request->request and $request->files
-$parseInput->applyOnHttpFoundationRequest($request);
-
-// OR access the data directly
+// access the data directly
 $values = $parseInput->getValues(): array; // like $_POST
 $files = $fileInput->getFiles(): array // like $_FILES
+
+// and add them to your http-foundation / psr7 implementation
+foreach ($parsedInput->getValues() as $key => $value) {
+    // http-foundation
+    $request = $request->request->set($key, $value);
+}
 ```
 
 ---
@@ -74,26 +73,25 @@ $files = $fileInput->getFiles(): array // like $_FILES
 ## **Converters**
 
 The actual parsing is handled by converter classes that implement
-[SBSEDV\Component\InputConverter\Converter\ConverterInterface](src/Converter/ConverterInterface.php).
+[SBSEDV\InputConverter\Converter\ConverterInterface](src/Converter/ConverterInterface.php).
 
 You can always implement your own converter.
 
 By default we support three customisable converters:
 
-### `SBSEDV\Component\InputConverter\Converter\UrlEncoded`
+### `SBSEDV\InputConverter\Converter\UrlEncodedConverter`
 
-Via its constructor you can influence which content types and http methods it supports.
+Via its constructor you can influence which http methods it supports.
 
 ```php
 public function __construct(
-    array $contentTypes = ['application/x-www-urlencoded'],
     array $methods = ['PUT', 'PATCH', 'DELETE']
 );
 ```
 
 ---
 
-### `SBSEDV\Component\InputConverter\Converter\JSON`
+### `SBSEDV\InputConverter\Converter\JsonConverter`
 
 Via its constructor you can influence which content types and http methods it supports.
 
@@ -106,7 +104,7 @@ public function __construct(
 
 ---
 
-### `SBSEDV\Component\InputConverter\Converter\FormData`
+### `SBSEDV\InputConverter\Converter\FormDataConverter`
 
 Via its constructor you can influence which content types and http methods it supports.
 
@@ -125,7 +123,7 @@ Even though file uploads via mulitpart/form-data are fully supported, they are *
 
 #### **_COMPATIBILITY_**:
 
-Also, the returned file format is not 100 percent compatibile with the native [$\_FILES](https://www.php.net/manual/en/features.file-upload.post-method.php#example-420) global.
+Also, the returned file format is not compatibile with the native [$\_FILES](https://www.php.net/manual/en/features.file-upload.post-method.php#example-420) global.
 
 If you upload an array / of images like:
 
@@ -134,7 +132,7 @@ If you upload an array / of images like:
 <input type="file" name="pictures[test2]" />
 ```
 
-PHP has a very, lets say not friendly way of arranging the array:
+PHP has a very, lets say not friendly way of sorting the array:
 
 ```php
 // Expected behaviour
@@ -167,4 +165,4 @@ $_FILES_ = [
 ];
 ```
 
-For sanity reasons we return the **expected** behaviour.
+We return the much more friendly **expected** behaviour.

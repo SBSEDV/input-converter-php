@@ -1,0 +1,22 @@
+------------------------------abcdef
+Content-Disposition: form-data; name="image"; filename="img.png"
+Content-Type: image/png
+
+random_junk_data
+------------------------------abcdef
+Content-Disposition: form-data; name="key1"
+
+value1
+------------------------------abcdef
+Content-Disposition: form-data; name="key2"
+
+value2
+------------------------------abcdef
+Content-Disposition: form-data; name="nested[]"
+
+nestedValue1
+------------------------------abcdef
+Content-Disposition: form-data; name="nested[nestedKey1]"
+
+nestedValue2
+------------------------------abcdef--
