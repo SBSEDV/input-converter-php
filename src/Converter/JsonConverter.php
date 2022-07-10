@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use SBSEDV\InputConverter\ParsedInput;
 use Symfony\Component\HttpFoundation\Request;
 
-class JSON extends AbstractConverter
+class JsonConverter extends AbstractConverter
 {
     /**
      * @param string[] $contentTypes [optional] The supported http content types.
