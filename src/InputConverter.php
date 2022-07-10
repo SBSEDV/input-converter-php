@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 class InputConverter
 {
     /**
-     * @param ConverterInterface[] $converters [optional] A list of input converters to register.
+     * @param ConverterInterface[] $converters [optional] A list of input converters to use.
      */
     public function __construct(
         private array $converters = []
@@ -19,7 +19,7 @@ class InputConverter
     }
 
     /**
-     * Get all registered input converters.
+     * Get all used input converters.
      *
      * @return ConverterInterface[]
      */
@@ -29,9 +29,9 @@ class InputConverter
     }
 
     /**
-     * Register an input converter.
+     * Use an input converter.
      *
-     * @param ConverterInterface $converter The input converter to register.
+     * @param ConverterInterface $converter The input converter to use.
      */
     public function addConverter(ConverterInterface $converter): self
     {
@@ -50,7 +50,7 @@ class InputConverter
      * @throws MalformedContentException   If the request body is malformed.
      * @throws UnsupportedRequestException If no supporting converter was found.
      */
-    public function convert(Request|ServerRequestInterface $request = null): ParsedInput
+    public function convert(Request|ServerRequestInterface $request): ParsedInput
     {
         foreach ($this->converters as $converter) {
             if ($converter->supports($request)) {
