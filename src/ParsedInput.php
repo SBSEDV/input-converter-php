@@ -20,7 +20,7 @@ class ParsedInput
     }
 
     /**
-     * Get the parsed input values.
+     * The request body values.
      */
     public function getValues(): array
     {
@@ -28,7 +28,7 @@ class ParsedInput
     }
 
     /**
-     * Get the parsed input files.
+     * The uploaded files.
      */
     public function getFiles(): array
     {
