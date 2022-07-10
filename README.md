@@ -1,3 +1,6 @@
+[![PHPStan](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpstan.yml/badge.svg)](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpstan.yml)
+[![PHPUnit](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpunit.yml/badge.svg)](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpunit.yml)
+
 # sbsedv/input-converter
 
 A minimal PHP component to nativly support user input parsing on http methods other than POST.
