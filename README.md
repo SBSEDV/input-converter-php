@@ -5,14 +5,14 @@
 
 A minimal PHP component to nativly support user input parsing on http methods other than POST.
 
-PHP natively only supports the parsing of multipart/form-data and application/x-www-urlencoded on POST http requests.
+PHP natively only supports the parsing of multipart/form-data and application/x-www-form-urlencoded on POST http requests.
 
 Many modern web applications also want use / support a) other http methods
 like PUT or PATCH and b) other content encodings like JSON or XML.
 
 This component provides a very simple and extensible object oriented api to support just that.
 
-Internally this component uses the PHP native functions [json_decode](https://www.php.net/manual/en/function.json-decode) and [parse_str](https://www.php.net/manual/en/function.parse-str) (multpart/form-data gets "translated" to x-www-urlencoded) and therefore complex data structures (arrays and objects) are only limited by what those functions support. <br/>
+Internally this component uses the PHP native functions [json_decode](https://www.php.net/manual/en/function.json-decode) and [parse_str](https://www.php.net/manual/en/function.parse-str) (multpart/form-data gets "translated" to x-www-form-urlencoded) and therefore complex data structures (arrays and objects) are only limited by what those functions support. <br/>
 This effectifly means that HTMLForms like the following are `FULLY supported`.
 
 ```html

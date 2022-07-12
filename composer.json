@@ -1,6 +1,6 @@
 {
     "name": "sbsedv/input-converter",
-    "description": "A minimal PHP library to nativly support PUT, PATCH and DELETE user input in form of mutlipart/form-data, application/x-www-urlencoded and various JSON types like application/json with complex data structures (nested html forms).",
+    "description": "A minimal PHP library to nativly support PUT, PATCH and DELETE user input in form of mutlipart/form-data, application/x-www-form-urlencoded and various JSON types like application/json with complex data structures (nested html forms).",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -13,7 +13,7 @@
         "json",
         "formdata",
         "urlencoded",
-        "x-www-urlencoded",
+        "x-www-form-urlencoded",
         "input converter",
         "input",
         "parser",

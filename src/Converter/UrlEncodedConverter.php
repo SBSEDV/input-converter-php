@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UrlEncodedConverter extends AbstractConverter
 {
-    protected const ALLOWED_CONTENT_TYPE = 'application/x-www-urlencoded';
+    protected const ALLOWED_CONTENT_TYPE = 'application/x-www-form-urlencoded';
 
     /**
      * @param string[] $methods [optional] The supported http methods.

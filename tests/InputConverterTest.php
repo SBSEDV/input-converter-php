@@ -41,7 +41,7 @@ class InputConverterTest extends TestCase
         $content = \http_build_query($content);
 
         $request = Request::create('/', 'PUT', content: $content);
-        $request->headers->set('content-type', 'application/x-www-urlencoded');
+        $request->headers->set('content-type', 'application/x-www-form-urlencoded');
 
         $inputConverter = $this->createInputConverter();
 
