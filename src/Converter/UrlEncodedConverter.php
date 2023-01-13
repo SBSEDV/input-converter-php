@@ -17,7 +17,7 @@ class UrlEncodedConverter extends AbstractConverter
         protected array $methods = ['PUT', 'PATCH', 'DELETE']
     ) {
         // prevent user from overwriting PHPs native parsing
-        if (false !== ($key = array_search('POST', $this->methods, false))) {
+        if (false !== ($key = \array_search('POST', $this->methods, false))) {
             unset($this->methods[$key]);
         }
     }
