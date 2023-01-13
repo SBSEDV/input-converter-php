@@ -38,7 +38,8 @@
         "symfony/http-foundation": "^5.0 || ^6.0",
         "nyholm/psr7": "^1.4",
         "phpstan/phpstan": "^1.8",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "friendsofphp/php-cs-fixer": "^3.13"
     },
     "suggest": {
         "symfony/http-foundation": "The Symfony HttpFoundation component replaces these default PHP global variables and functions by an object-oriented layer.",
