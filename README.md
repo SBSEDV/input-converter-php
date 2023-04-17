@@ -1,5 +1,6 @@
-[![PHPStan](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpstan.yml/badge.svg)](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpstan.yml)
 [![PHPUnit](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpunit.yml/badge.svg)](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpunit.yml)
+[![PHPStan](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpstan.yml/badge.svg)](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpstan.yml)
+[![PHPCS-Fixer](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpcsfixer.yml/badge.svg)](https://github.com/SBSEDV/input-converter-php/actions/workflows/phpcsfixer.yml)
 
 # sbsedv/input-converter
 
