@@ -37,18 +37,21 @@ This effectifly means that HTMLForms like the following are `FULLY supported`.
 
 You should instantiate and call this component as early in your app lifecycle as possible.
 
-You **MUST** pass either a [PSR-7](https://www.php-fig.org/psr/psr-7/) or [HTTP-Foundation](https://symfony.com/doc/current/components/http_foundation.html) request object to the "convert" method.
+You **MUST** either pass a [PSR-7](https://www.php-fig.org/psr/psr-7/) or [HTTP-Foundation](https://symfony.com/doc/current/components/http_foundation.html) request wrapper object to the "convert" method.
 
 ```php
 <?php declare(strict_types=1);
 
 use SBSEDV\InputConverter\InputConverter;
-use SBSEDV\InputConverter\ParsedInput;
+use SBSEDV\InputConverter\Request\HttpFoundationRequest;
+use SBSEDV\InputConverter\Request\Psr7Request;
+
+$request = new HttpFoundationRequest($request);
+// $request = new Psr7Request($request);
 
 try {
-    /** @var ParsedInput $parsedInput */
-    $parsedInput = (new InputConverter())
-        ->addConverter(...) // your converter instance
+    (new InputConverter())
+        ->addConverter(...) // your converters
         ->convert($request);
 } catch (MalformedContentException $e) {
     // a converter supported the request
@@ -59,17 +62,11 @@ try {
 } catch (UnsupportedRequestException) {
     // no converter supported the request
 }
-
-// access the data directly
-$values = $parseInput->getValues(): array; // like $_POST
-$files = $fileInput->getFiles(): array // like $_FILES
-
-// and add them to your http-foundation / psr7 implementation
-foreach ($parsedInput->getValues() as $key => $value) {
-    // http-foundation
-    $request = $request->request->set($key, $value);
-}
 ```
+
+The decoded body data is automatically added to the underlying Psr7 or Http-Foundation request object.
+
+**Caution**: Psr7 request are immutable. You can get the new object by calling `$request->getRequest()`.
 
 ---
 
@@ -119,53 +116,3 @@ public function __construct(
     bool $fileSupport = false
 );
 ```
-
-#### **CAUTION WITH FILE UPLOADS**:
-
-Even though file uploads via mulitpart/form-data are fully supported, they are **NOT** recommended because the whole file will be loaded into memory. You should instead use POST request for file uploads and let PHP handle that mess natively.
-
-#### **_COMPATIBILITY_**:
-
-Also, the returned file format is not compatibile with the native [$\_FILES](https://www.php.net/manual/en/features.file-upload.post-method.php#example-420) global.
-
-If you upload an array / of images like:
-
-```html
-<input type="file" name="pictures[test1]" />
-<input type="file" name="pictures[test2]" />
-```
-
-PHP has a very, lets say not friendly way of sorting the array:
-
-```php
-// Expected behaviour
-$_FILES_ = [
-    'pictures' => [
-        'test1' => [
-            'name' => 'test.png',
-            'type' => 'image/png',
-            'tmp_name' => '/tmp/123456',
-            'error' => 0,
-            'size' => 1234
-        ],
-        'test2' => [
-            ...
-        ]
-    ]
-];
-
-// Actual behaviour
-$_FILES_ = [
-    'name' => [
-        'test1' => 'what.png',
-        'test2' => 'the_heck.jpg'
-    ],
-    'type' => [
-        'test1' => 'image/png',
-        'test2' => 'image/jpeg'
-    ],
-    ...
-];
-```
-
-We return the much more friendly **expected** behaviour.
