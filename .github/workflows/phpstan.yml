@@ -4,23 +4,50 @@ on:
     pull_request:
     workflow_dispatch:
 
+permissions:
+    contents: read
+
 jobs:
-    build:
-        runs-on: ubuntu-latest
+    phpstan:
+        runs-on: ${{ matrix.operating-system }}
+
+        strategy:
+            matrix:
+                operating-system: [ubuntu-latest]
+                php-versions: ["8.1", "8.2"]
+
+        name: PHP ${{ matrix.php-versions }} Static Analysis on ${{ matrix.operating-system }}
+
+        env:
+            PHP_EXTENSIONS: mbstring
+            key: cache-v1
 
         steps:
             - uses: actions/checkout@v3
 
-            - name: Cache Composer dependencies
+            - name: Setup Cache environment
+              id: extcache
+              uses: shivammathur/cache-extensions@v1
+              with:
+                  php-version: ${{ matrix.php-versions }}
+                  extensions: ${{ env.PHP_EXTENSIONS }}
+                  key: ${{ env.key }}
+
+            - name: Cache PHP extensions
               uses: actions/cache@v3
               with:
-                  path: /tmp/composer-cache
-                  key: ${{ runner.os }}-${{ hashFiles('**/composer.json') }}
+                  path: ${{ steps.extcache.outputs.dir }}
+                  key: ${{ steps.extcache.outputs.key }}
+                  restore-keys: ${{ steps.extcache.outputs.key }}
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+                  extensions: ${{ env.PHP_EXTENSIONS }}
 
             - name: Install Composer packages
-              uses: php-actions/composer@v6
-              with:
-                  args: --no-scripts --ignore-platform-reqs
+              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
             - name: Run PHPSTAN
               run: $GITHUB_WORKSPACE/vendor/bin/phpstan --level=9 --error-format=github
