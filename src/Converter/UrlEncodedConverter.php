@@ -2,11 +2,9 @@
 
 namespace SBSEDV\InputConverter\Converter;
 
-use Psr\Http\Message\ServerRequestInterface;
-use SBSEDV\InputConverter\ParsedInput;
-use Symfony\Component\HttpFoundation\Request;
+use SBSEDV\InputConverter\Request\RequestInterface;
 
-class UrlEncodedConverter extends AbstractConverter
+class UrlEncodedConverter implements ConverterInterface
 {
     protected const ALLOWED_CONTENT_TYPE = 'application/x-www-form-urlencoded';
 
@@ -14,7 +12,7 @@ class UrlEncodedConverter extends AbstractConverter
      * @param string[] $methods [optional] The supported http methods.
      */
     public function __construct(
-        protected array $methods = ['PUT', 'PATCH', 'DELETE']
+        private array $methods = ['PUT', 'PATCH', 'DELETE']
     ) {
         // prevent user from overwriting PHPs native parsing
         if (false !== ($key = \array_search('POST', $this->methods, false))) {
@@ -25,13 +23,13 @@ class UrlEncodedConverter extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function supports(Request|ServerRequestInterface $request): bool
+    public function supports(RequestInterface $request): bool
     {
         if (!\in_array($request->getMethod(), $this->methods, true)) {
             return false;
         }
 
-        foreach ($this->getContentTypes($request) as $contentType) {
+        foreach ($request->getContentTypes() as $contentType) {
             if (\str_starts_with($contentType, self::ALLOWED_CONTENT_TYPE)) {
                 return true;
             }
@@ -43,10 +41,10 @@ class UrlEncodedConverter extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function convert(Request|ServerRequestInterface $request): ParsedInput
+    public function convert(RequestInterface $request): void
     {
-        \parse_str($this->getContent($request), $array);
+        \parse_str($request->getContent(), $array);
 
-        return new ParsedInput(static::class, $array);
+        $request->populate($array);
     }
 }

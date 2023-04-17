@@ -2,11 +2,10 @@
 
 namespace SBSEDV\InputConverter;
 
-use Psr\Http\Message\ServerRequestInterface;
 use SBSEDV\InputConverter\Converter\ConverterInterface;
 use SBSEDV\InputConverter\Exception\MalformedContentException;
 use SBSEDV\InputConverter\Exception\UnsupportedRequestException;
-use Symfony\Component\HttpFoundation\Request;
+use SBSEDV\InputConverter\Request\RequestInterface;
 
 class InputConverter
 {
@@ -19,7 +18,7 @@ class InputConverter
     }
 
     /**
-     * Get all used input converters.
+     * Get all registered input converters.
      *
      * @return ConverterInterface[]
      */
@@ -29,9 +28,9 @@ class InputConverter
     }
 
     /**
-     * Use an input converter.
+     * Add a converter.
      *
-     * @param ConverterInterface $converter The input converter to use.
+     * @param ConverterInterface $converter The input converter to add.
      */
     public function addConverter(ConverterInterface $converter): self
     {
@@ -43,29 +42,31 @@ class InputConverter
     /**
      * Convert the input from the given request.
      *
-     * @param Request|ServerRequestInterface $request The http request to convert.
-     *
-     * @return ParsedInput The converted input.
+     * @param RequestInterface $request The http request to convert.
      *
      * @throws MalformedContentException   If the request body is malformed.
-     * @throws UnsupportedRequestException If no supporting converter was found.
+     * @throws UnsupportedRequestException If no converter supports the request.
      */
-    public function convert(Request|ServerRequestInterface $request): ParsedInput
+    public function convert(RequestInterface $request): void
     {
         foreach ($this->converters as $converter) {
-            if ($converter->supports($request)) {
-                try {
-                    return $converter->convert($request);
-                } catch (\Throwable $e) {
-                    if ($e instanceof MalformedContentException) {
-                        throw $e;
-                    }
+            if (!$converter->supports($request)) {
+                continue;
+            }
 
-                    throw new MalformedContentException($e);
+            try {
+                $converter->convert($request);
+
+                return;
+            } catch (\Throwable $e) {
+                if ($e instanceof MalformedContentException) {
+                    throw $e;
                 }
+
+                throw new MalformedContentException($e);
             }
         }
 
-        throw new UnsupportedRequestException('No supporting input converter for the given request was found.');
+        throw new UnsupportedRequestException('No registered input converter supports the request.');
     }
 }

@@ -2,13 +2,14 @@
 
 namespace SBSEDV\InputConverter\Converter;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Riverline\MultiPartParser\Converters;
+use Riverline\MultiPartParser\StreamedPart;
 use SBSEDV\InputConverter\Exception\MalformedContentException;
-use SBSEDV\InputConverter\ParsedInput;
-use Symfony\Component\HttpFoundation\Request;
+use SBSEDV\InputConverter\Request\HttpFoundationRequest;
+use SBSEDV\InputConverter\Request\Psr7Request;
+use SBSEDV\InputConverter\Request\RequestInterface;
 
-class FormDataConverter extends AbstractConverter
+class FormDataConverter implements ConverterInterface
 {
     /**
      * @param string[] $methods     [optional] The supported http methods.
@@ -18,8 +19,8 @@ class FormDataConverter extends AbstractConverter
      *                              You should use POST requests for file uploads and let PHP handle this.
      */
     public function __construct(
-        protected array $methods = ['PUT', 'PATCH', 'DELETE'],
-        protected bool $fileSupport = false
+        private array $methods = ['PUT', 'PATCH', 'DELETE'],
+        private bool $fileSupport = false
     ) {
         // prevent user from overwriting PHPs native parsing
         if (false !== ($key = \array_search('POST', $this->methods, false))) {
@@ -30,7 +31,7 @@ class FormDataConverter extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function supports(Request|ServerRequestInterface $request): bool
+    public function supports(RequestInterface $request): bool
     {
         // The content type will always have a random suffix
         // "multipart/form-data; boundary=----WebKitFormBoundary4783NIJFN"
@@ -39,7 +40,7 @@ class FormDataConverter extends AbstractConverter
             return false;
         }
 
-        foreach ($this->getContentTypes($request) as $contentType) {
+        foreach ($request->getContentTypes() as $contentType) {
             if (\str_starts_with($contentType, 'multipart/form-data; boundary=')) {
                 return true;
             }
@@ -51,13 +52,9 @@ class FormDataConverter extends AbstractConverter
     /**
      * {@inheritdoc}
      */
-    public function convert(Request|ServerRequestInterface $request): ParsedInput
+    public function convert(RequestInterface $request): void
     {
-        if ($request instanceof Request) {
-            $document = Converters\HttpFoundation::convert($request);
-        } else {
-            $document = Converters\PSR7::convert($request);
-        }
+        $document = $this->getDocument($request);
 
         if (!$document->isMultiPart()) {
             throw new MalformedContentException();
@@ -121,6 +118,19 @@ class FormDataConverter extends AbstractConverter
             });
         }
 
-        return new ParsedInput(static::class, $valueArray, $fileArray ?? []);
+        $request->populate($valueArray, $fileArray ?? []);
+    }
+
+    protected function getDocument(RequestInterface $request): StreamedPart
+    {
+        if ($request instanceof HttpFoundationRequest) {
+            return Converters\HttpFoundation::convert($request->getRequest());
+        }
+
+        if ($request instanceof Psr7Request) {
+            return Converters\PSR7::convert($request->getRequest());
+        }
+
+        return Converters\Globals::convert();
     }
 }
