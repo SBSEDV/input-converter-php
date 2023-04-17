@@ -2,7 +2,12 @@
 
 This changelog references the relevant changes (bug and security fixes).
 
-To get the diff between two versions, go to https://github.com/sbsedv/input-converter-php/compare/v1.0.0...v2.0.0
+To get the diff between the latest two versions, go to https://github.com/sbsedv/input-converter-php/compare/v2.0.1...v3.0.0
+
+-   3.0.0 (2023-04-17)
+
+    -   Use `ReqeustInterface` objects internally
+    -   Populate Psr7 and Http-Foundation request with data directly
 
 -   2.0.0 (2022-07-10)
 
