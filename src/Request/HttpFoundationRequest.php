@@ -37,7 +37,7 @@ class HttpFoundationRequest implements RequestInterface
      */
     public function getContentTypes(): array
     {
-        return $this->request->headers->all('content-type');
+        return $this->request->headers->all('content-type'); // @phpstan-ignore-line
     }
 
     /**

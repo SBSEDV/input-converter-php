@@ -49,6 +49,6 @@ class JsonConverter implements ConverterInterface
             throw new MalformedContentException($e);
         }
 
-        $request->populate($array);
+        $request->populate((array) $array);
     }
 }

@@ -51,18 +51,20 @@ class Psr7Request implements RequestInterface
     {
         $uploadedFiles = [];
 
-        if (\count($files) > 0 && (null === $this->uploadedFileFactory || null === $this->streamFactory)) {
-            throw new \LogicException('You must pass an UploadedFileFactory and a SteamInterface');
-        }
+        if (\count($files) > 0) {
+            if (null === $this->uploadedFileFactory || null === $this->streamFactory) {
+                throw new \LogicException('You must pass an UploadedFileFactory and a SteamInterface');
+            }
 
-        foreach ($files as $file) {
-            $uploadedFiles[] = $this->uploadedFileFactory->createUploadedFile(
-                $this->streamFactory->createStreamFromFile($file['tmp_name']),
-                $file['size'] ?? null,
-                $file['error'] ?? \UPLOAD_ERR_OK,
-                $file['name'] ?? null,
-                $file['type'] ?? null
-            );
+            foreach ($files as $file) {
+                $uploadedFiles[] = $this->uploadedFileFactory->createUploadedFile(
+                    $this->streamFactory->createStreamFromFile($file['tmp_name']),
+                    $file['size'] ?? null,
+                    $file['error'] ?? \UPLOAD_ERR_OK,
+                    $file['name'] ?? null,
+                    $file['type'] ?? null
+                );
+            }
         }
 
         $this->request = $this->request
