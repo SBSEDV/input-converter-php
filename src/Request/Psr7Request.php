@@ -53,7 +53,7 @@ class Psr7Request implements RequestInterface
 
         if (\count($files) > 0) {
             if (null === $this->uploadedFileFactory || null === $this->streamFactory) {
-                throw new \LogicException('You must pass an UploadedFileFactory and a SteamInterface');
+                throw new \LogicException('You must pass an UploadedFileFactory and a StreamInterface if file uploads are allowed.');
             }
 
             foreach ($files as $file) {
